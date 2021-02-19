@@ -1,0 +1,10 @@
+$fontHeading: 'Asap', sans-serif;
+$fontText: 'Open Sans', sans-serif;
+$fontLink: 'Open Sans', sans-serif;
+$fontCode: 'Andale Mono', 'DejaVu Sans Mono', monospace;
+$fontPre: 'Courier 10 Pitch', Courier, monospace;
+
+$baseLineHeightBody: 1.5;
+$baseLineHeightPre: 1.6;
+
+$fontSizesBreakpoints: (sm: (baseFontSize: 16px,baseLineHeight: 1.3,scale: 1.25),md: (baseFontSize: 16px,baseLineHeight: 1.4,scale: 1.33));
