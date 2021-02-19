@@ -19,13 +19,22 @@ import { ReactComponent as IkanGurame } from './../assets/menu/img-gurame.svg';
 import { ReactComponent as IkanLele } from './../assets/menu/img-lele.svg';
 import { ReactComponent as IkanNila } from './../assets/menu/img-nila.svg';
 import { ReactComponent as Udang } from './../assets/menu/img-udang.svg';
+import { useEffect } from "react";
 
-export default function Sidebar() {
+export default function Sidebar({ isOpen, onClose, onOpen }) {
     const [isMediaLarge] = useMediaQuery("(min-width: 992px)");
-    let { isOpen, onClose } = useDisclosure();
-    isOpen = isMediaLarge;
+    useEffect(() => {
+        if( isMediaLarge ) {
+            onOpen();
+        } else {
+            onClose();
+        }
+        return () => {
+            // cleanup
+        }
+    }, [isMediaLarge])
     return <>
-        <Drawer placement="left" size="xs" isOpen={ isOpen } onClose={ onClose }>
+        <Drawer placement="left" size="xs" isOpen={ isOpen } onClose={ onClose } trapFocus={ !isMediaLarge }>
             <DrawerOverlay>
                 <DrawerContent>
                     { !isMediaLarge ? <DrawerCloseButton /> : false }

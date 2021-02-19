@@ -10,8 +10,9 @@ export default function MenuLink({ children, isActive, leftIcon, ...props }) {
     lineHeight="1.2"
     transition="all 0.2s cubic-bezier(.08,.52,.52,1)"
     borderRadius=".375rem"
+    fontFamily="heading"
     fontSize=".875rem"
-    fontWeight={ isActive ? "600" : "500" }
+    fontWeight={ isActive ? "bold" : "500" }
     textAlign="left"
     color={ isActive ? "#1c917f" : "#6e7191" }
     bg="transparent"

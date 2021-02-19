@@ -4,7 +4,7 @@ import App from './components/App';
 import reportWebVitals from './utils/reportWebVitals';
 import { ChakraProvider, extendTheme } from '@chakra-ui/react';
 import { BrowserRouter } from 'react-router-dom';
-import Theme from './theme';
+import Theme, { Fonts } from './theme';
 
 import './styles/styles.scss';
 
@@ -14,6 +14,7 @@ ReactDOM.render(
     <React.StrictMode>
         <BrowserRouter>
             <ChakraProvider theme={ theme }>
+                <Fonts />
                 <App />
             </ChakraProvider>
         </BrowserRouter>
