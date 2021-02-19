@@ -1,0 +1,30 @@
+.sh-logo {
+    display: flex;
+    align-items: center;
+    height: 55px;
+    padding-right: 64px;
+}
+
+.sh-menu-link {
+    .sh-icon {
+        color: inherit;
+        width: 21px;
+        height: 21px;
+        display: flex;
+        align-items: center;
+    }
+
+    svg {
+        fill: currentColor;
+    }
+}
+
+@include media-breakpoint-up(sm) {
+    .chakra-slide {
+        box-shadow: none !important;
+    }
+
+    .chakra-modal__overlay {
+        background: transparent !important;
+    }
+}
