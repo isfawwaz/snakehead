@@ -7,15 +7,28 @@ import {
     VStack
 } from "@chakra-ui/react";
 import moment from "moment";
-import { capitalize, join, numberFormat, toNumber } from "underscore.string";
+import { capitalize, toSentenceSerial, numberFormat, toNumber, isBlank, words } from "underscore.string";
 import 'moment/locale/id';
 
 export default function Fish({ name, province, city, price, timestamp, isActive = false }) {
+    // Function
+    const caps = (value) => {
+        if( !isBlank(value) && value != null && value !== undefined) {
+            let w = words( value.toLowerCase() );
+            let i = [];
+            w.forEach( item => {
+                i.push( capitalize( item ) );
+            });
+            return toSentenceSerial( i, " ", " " );
+        }
+
+        return value;
+    }
     // Setup 3rd party
     moment.locale('id');
     
     // Variable
-    const areaFormatted = join(" - ", capitalize(province), capitalize(city) )
+    const areaFormatted = toSentenceSerial([caps(province), caps(city)], " - ", " - ")
     const priceFormatted = numberFormat( toNumber( price ), ",", "." );
     const dateFormatted = timestamp !== undefined ? moment( toNumber(timestamp) ).fromNow() : "";
 
@@ -25,10 +38,10 @@ export default function Fish({ name, province, city, price, timestamp, isActive 
     p={ 4 } 
     background={ isActive ? "brand.500" : "white" }
     boxShadow={ isActive ? "2xl" : "none" }
-    _hover={{ boxShadow: "xl" }}
+    _hover={{ boxShadow: "xl", zIndex: 1 }}
     transition="all .3s ease-in-out" 
     cursor="pointer"
-    zIndex={ isActive ? 1 : 0 }>
+    zIndex={ isActive ? 2 : 0 }>
         <HStack spacing={4} align="stretch">
             <Avatar name={ name } src="https://bit.ly/broken-link" size="lg" colorScheme="teal" />
             <VStack spacing={ 1 } align="flex-start" justify="flex-start" w="full" h="full">

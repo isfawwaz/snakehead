@@ -34,7 +34,7 @@ export default function Sidebar({ isOpen, onClose, onOpen }) {
         }
     }, [isMediaLarge])
     return <>
-        <Drawer placement="left" size="xs" isOpen={ isOpen } onClose={ onClose } trapFocus={ !isMediaLarge }>
+        <Drawer placement="left" size="xs" isOpen={ isOpen } onClose={ onClose } trapFocus={ !isMediaLarge } blockScrollOnMount={ !isMediaLarge }>
             <DrawerOverlay>
                 <DrawerContent>
                     { !isMediaLarge ? <DrawerCloseButton /> : false }
