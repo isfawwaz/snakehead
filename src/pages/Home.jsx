@@ -28,11 +28,8 @@ export default function Home() {
                 <Input type="search" variant="filled" placeholder="Cari komoditas, area atau lainnya..." />
                 <InputRightElement pointerEvents="none" children={ <Icon name="search-2" type="line" /> }/>
             </InputGroup>
-            {/* <IconButton aria-label="Refresh data" colorScheme="brand" icon={ <Icon name="refresh" type="line" /> } value={ sort } onChange={ handleChange } /> */}
         </HStack>
         <VStack spacing={4} align="stretch">
-            {/* <Fish name="Nila" province="Jawa Barat" city="Cirebon" price={ 30000 } timestamp="1611219068529" isActive={ true } />
-            <Fish name="Nila" province="Jawa Barat" city="Cirebon" price={ 30000 } timestamp="1611219068529" /> */}
             { data.map( (fish, indx) => <Fish key={ indx } name={ fish.komoditas } province={ fish.area_provinsi } city={ fish.area_kota } price={ fish.price } timestamp={ fish.timestamp } /> ) }
         </VStack>
     </div>;

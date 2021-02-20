@@ -7,6 +7,7 @@ import {
     VStack
 } from "@chakra-ui/react";
 import { formatDate, formatNumber, sentenceSerial } from "../utils/ext";
+import FishImage from "./FishImage";
 
 export default function Fish({ name, province, city, price, timestamp, isActive = false }) {
     // Variable
@@ -25,7 +26,8 @@ export default function Fish({ name, province, city, price, timestamp, isActive 
     cursor="pointer"
     zIndex={ isActive ? 2 : 0 }>
         <HStack spacing={4} align="stretch">
-            <Avatar name={ name } src="https://bit.ly/broken-link" size="lg" colorScheme="teal" />
+            {/* <Avatar name={ name } src="https://bit.ly/broken-link" size="lg" colorScheme="teal" /> */}
+            <FishImage name={ name } />
             <VStack spacing={ 1 } align="flex-start" justify="flex-start" w="full" h="full">
                 <HStack spacing={4} justify="space-between" w="full">
                     <Heading as="h5" size="sm" color={ isActive ? "white" : "gray.600" } isTruncated>{ name }</Heading>

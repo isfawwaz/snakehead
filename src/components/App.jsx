@@ -3,6 +3,7 @@ import { useEffect, useState } from 'react';
 import { Route, Switch } from 'react-router-dom';
 import { useGetFetchList } from '../stores/reducer';
 import Home from './../pages/Home';
+import Detail from './Detail';
 import DetailDefault from './DetailDefault';
 import Navbar from './Navbar';
 import Sidebar from './Sidebar';
@@ -30,7 +31,8 @@ export default function App() {
             </Switch>
         </section>
         <section className="sh-main-detail">
-            <DetailDefault total={ total } />
+            {/* <DetailDefault total={ total } /> */}
+            <Detail id="0c192840-7ee4-11ea-b3e1-e335da5df3hj" name="Cupang" province="JAWA BARAT" city="CIMAHI" size="101" price="20100" date="2020-06-01T00:00:00+07:00" timestamp="1590944400" />
         </section>
     </main>
 }

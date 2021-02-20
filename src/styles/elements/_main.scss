@@ -15,6 +15,36 @@
     }
 }
 
+.sh-fish-image {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 64px;
+    height: 64px;
+    border: 1px solid $colorPrimary;
+    border-radius: 99999px;
+    background-color: rgba( $colorPrimaryDark, .05 );
+    flex-shrink: 0;
+
+    .sh-fish-image__item {
+        display: flex;
+        width: 32px;
+        height: 32px;
+        align-items: center;
+        justify-content: center;
+    }
+
+    &.sh-fish-image__big {
+        width: 160px;
+        height: 160px;
+
+        .sh-fish-image__item {
+            width: 80px;
+        }
+
+    }
+}
+
 .app {
     min-height: 100vh;
     display: flex;
