@@ -61,3 +61,9 @@ export const useFetchList = () => {
 
     return state;
 }
+
+export const useGetFetchList = () => {
+    const [ state ] = useReducer( reducer, initState );
+    console.log(state);
+    return state;
+}

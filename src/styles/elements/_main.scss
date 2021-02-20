@@ -5,6 +5,16 @@
     padding-right: 64px;
 }
 
+.sh-animation-svg {
+    display: flex;
+    justify-content: center;
+    width: 100%;
+
+    & > div {
+        width: 60%;
+    }
+}
+
 .app {
     min-height: 100vh;
     display: flex;
@@ -22,6 +32,13 @@
         overflow-y: auto;
         background-color: $grayscaleBackground;
         padding: 32px;
+    }
+
+    .sh-main-detail {
+        width: calc( 65vw - 320px );
+        height: 100vh;
+        overflow-y: auto;
+        overflow-x: hidden;
     }
 
     .sh-navbar {

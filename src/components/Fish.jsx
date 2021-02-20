@@ -6,31 +6,13 @@ import {
     Text, 
     VStack
 } from "@chakra-ui/react";
-import moment from "moment";
-import { capitalize, toSentenceSerial, numberFormat, toNumber, isBlank, words } from "underscore.string";
-import 'moment/locale/id';
+import { formatDate, formatNumber, sentenceSerial } from "../utils/ext";
 
 export default function Fish({ name, province, city, price, timestamp, isActive = false }) {
-    // Function
-    const caps = (value) => {
-        if( !isBlank(value) && value != null && value !== undefined) {
-            let w = words( value.toLowerCase() );
-            let i = [];
-            w.forEach( item => {
-                i.push( capitalize( item ) );
-            });
-            return toSentenceSerial( i, " ", " " );
-        }
-
-        return value;
-    }
-    // Setup 3rd party
-    moment.locale('id');
-    
     // Variable
-    const areaFormatted = toSentenceSerial([caps(province), caps(city)], " - ", " - ")
-    const priceFormatted = numberFormat( toNumber( price ), ",", "." );
-    const dateFormatted = timestamp !== undefined ? moment( toNumber(timestamp) ).fromNow() : "";
+    const areaFormatted = sentenceSerial([ province, city ]);
+    const priceFormatted = formatNumber( price );
+    const dateFormatted = formatDate( timestamp );
 
     // JSX Element
     return <Box 
