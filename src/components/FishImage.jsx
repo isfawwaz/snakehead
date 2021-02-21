@@ -5,7 +5,7 @@ import { ReactComponent as ImageFishCatfish} from './../assets/fish/img-fish-cat
 import { ReactComponent as ImageFishDory} from './../assets/fish/img-fish-dory.svg';
 import { ReactComponent as ImageShrimp} from './../assets/fish/img-shrimp.svg';
 
-const FishImage = ({ name = null, emptyShowDefault = true, big = false }) => {
+const FishImage = ({ name = null, emptyShowDefault = true, big = false, inverted = false }) => {
     // Variable
     let cls = "sh-fish-image";
     let defaultImage = <ImageFishNila />
@@ -28,6 +28,7 @@ const FishImage = ({ name = null, emptyShowDefault = true, big = false }) => {
 
     // Class Name
     cls = big ? cls + " sh-fish-image__big" : cls;
+    cls = inverted ? cls + " sh-fish-image__inverted" : cls;
 
     // Element
     return <div className={ cls }>

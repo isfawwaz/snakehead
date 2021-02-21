@@ -8,7 +8,8 @@ import {
     Stack,
     Divider,
     Button,
-    useMediaQuery
+    useMediaQuery,
+    useDisclosure
   } from "@chakra-ui/react"
 import MenuLink from './MenuLink';
 import Icon from './Icon';
@@ -24,7 +25,8 @@ import { Link } from "react-router-dom";
 import { checkMenu } from "../utils/ext";
 import { ACTIONS, snakeHead, useFishes } from "../stores/hooks";
 
-export default function Sidebar({ isOpen, onClose, onOpen, onAddClicked }) {
+export default function Sidebar({ onAddClicked }) {
+    const {  isOpen, onOpen, onClose } = useDisclosure();
     const [isMediaLarge] = useMediaQuery("(min-width: 992px)");
     const { filter } = useFishes();
     const { isAll, isGurame, isNila, isDori, isLele, isUdang } = checkMenu( filter );

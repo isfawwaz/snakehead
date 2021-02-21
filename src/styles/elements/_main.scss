@@ -43,6 +43,11 @@
         }
 
     }
+
+    &.sh-fish-image__inverted {
+        border-color: $colorPrimaryLight;
+        background-color: rgba( white, .7 );
+    }
 }
 
 .app {

@@ -4,13 +4,13 @@ import { caps, formatDate, formatNumber, isDesktop } from "../utils/ext";
 import FishImage from "./FishImage"
 import Icon from "./Icon";
 
-const Detail = ({ id, name, province = null, city = null, price = 0, size = 0, date = null, timestamp = null }) => {
+const Detail = ({ id, name, onBackClick, province = null, city = null, price = 0, size = 0, date = null, timestamp = null }) => {
     const [ isMediaLarge ] = useMediaQuery( isDesktop() );
     
     return <div className="sh-fish-detail">
         <HStack p={ 4 } justify="space-between">
             <HStack>
-                { !isMediaLarge ? <IconButton color="gray.600" size="lg" fontSize="4xl" fontWeight="normal" variant="ghost" icon={ <Icon name="arrow-left-s" type="line" /> } /> : false }
+                { !isMediaLarge ? <IconButton color="gray.600" size="lg" fontSize="4xl" fontWeight="normal" variant="ghost" onClick={ onBackClick } icon={ <Icon name="arrow-left-s" type="line" /> } /> : false }
                 <Text fontSize="lg" color="gray.500" fontWeight="500">Detail Ikan: { name }</Text>
             </HStack>
             <HStack>

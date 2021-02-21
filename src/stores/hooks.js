@@ -27,12 +27,18 @@ export const ACTIONS = {
     FISH_SEARCH: "fish-search",
     FISH_SORT: "fish-sort",
     FISH_FILTER: "fish-filter",
+
     AREA_REQUEST: "area-request",
     AREA_RECEIVE: "area-receive",
     AREA_ERROR: "area-error",
+
     SIZE_REQUEST: "size-request",
     SIZE_RECEIVE: "size-receive",
-    SIZE_ERROR: "size-error"
+    SIZE_ERROR: "size-error",
+
+    DETAIL_REQUEST: "detail-request",
+    DETAIL_RECEIVE: "detail-receive",
+    DETAIL_ERROR: "detail-error"
 }
 
 const SortFilter = {
@@ -142,6 +148,7 @@ const reducer = ( state, action ) => {
             return {
                 ...state,
                 filter: {
+                    uuid: action.id,
                     komoditas: action.search,
                     area_provinsi: action.province,
                     area_kota: action.city,
@@ -229,6 +236,30 @@ const reducer = ( state, action ) => {
                 ...state,
                 loading: false,
                 sizes: items
+            }
+            break;
+
+        // DETAIL
+        case ACTIONS.DETAIL_REQUEST:
+            return {
+                ...state,
+                loading: true
+            }
+        case ACTIONS.DETAIL_ERROR:
+            return {
+                ...state,
+                loading: false,
+                errors: {
+                    ...state.errors,
+                    detail: action.payload
+                }
+            }
+        case ACTIONS.DETAIL_RECEIVE:
+            console.log("KEPANGGIL");
+            return {
+                ...state,
+                loading: false,
+                detail: action.payload
             }
             break;
 
