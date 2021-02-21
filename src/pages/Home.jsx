@@ -13,8 +13,9 @@ import dataSort from './../data/sort';
 import Fish from '../components/Fish';
 import { useFetchList } from '../stores/reducer';
 import Filter from '../components/Filter';
+import { withRouter } from 'react-router-dom';
 
-export default function Home() {
+function Home() {
     // const [ sort, setSort ] = useState();
     // const handleChange = (event) => setSort(event.target.value);
     const { fishes, loading, errors } = useFetchList();
@@ -36,3 +37,5 @@ export default function Home() {
         </VStack>
     </div>;
 }
+
+export default withRouter(Home);

@@ -25,7 +25,7 @@
             z-index: 1400;
         }
     
-        .chakra-modal__content-container {
+        & > .chakra-modal__content-container {
             width: 320px !important;
         }
     }

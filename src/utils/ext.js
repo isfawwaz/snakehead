@@ -1,7 +1,6 @@
 import { capitalize, toSentenceSerial, numberFormat, toNumber, isBlank, words, include } from "underscore.string";
 import moment from "moment";
 import 'moment/locale/id';
-import { useMediaQuery } from "@chakra-ui/react";
 
 moment.locale("id");
 const _ = require('lodash');

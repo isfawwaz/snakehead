@@ -8,7 +8,6 @@ import {
     Stack,
     Divider,
     Button,
-    useDisclosure,
     useMediaQuery
   } from "@chakra-ui/react"
 import MenuLink from './MenuLink';
@@ -21,8 +20,9 @@ import { ReactComponent as IkanNila } from './../assets/menu/img-nila.svg';
 import { ReactComponent as Udang } from './../assets/menu/img-udang.svg';
 import { useEffect } from "react";
 import ConditionalWrapper from "./ConditialWrapper";
+import { Link } from "react-router-dom";
 
-export default function Sidebar({ isOpen, onClose, onOpen }) {
+export default function Sidebar({ isOpen, onClose, onOpen, onAddClicked }) {
     const [isMediaLarge] = useMediaQuery("(min-width: 992px)");
     useEffect(() => {
         if( isMediaLarge ) {
@@ -53,7 +53,7 @@ export default function Sidebar({ isOpen, onClose, onOpen }) {
                             <MenuLink leftIcon={ <IkanLele /> }>Ikan Lele</MenuLink>
                             <MenuLink leftIcon={ <Udang /> }>Udang</MenuLink>
                             <Divider/>
-                            <Button variant="solid" colorScheme="brand" leftIcon={ <Icon name="add" type="line" /> }>Tambah Baru</Button> 
+                            <Button onClick={ onAddClicked } variant="solid" colorScheme="brand" leftIcon={ <Icon name="add" type="line" /> }>Tambah Baru</Button> 
                         </Stack>
                     </DrawerBody>
                 </DrawerContent>
