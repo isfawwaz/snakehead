@@ -60,6 +60,24 @@ export const formatDate = ( date, now = true, format = "DD MMM YYYY" ) => {
     return null;
 }
 
+export const formatDateHuman = ( date ) => {
+    let d;
+    if( !isNaN(date) ) {
+        d = moment.unix( toNumber(date) );
+        if( !d.isValid() ) {
+            return null;
+        }
+    } else {
+        d = moment.parseZone( date );
+    }
+
+    if(d.format("YYYY") == moment().format("YYYY")) {
+        return d.format("MMM DD");
+    }
+
+    return d.format("DD/MM/YY");
+}
+
 export const checkFish = ( name ) => {
     let isCarp = false;
     let isCatFish = false;
