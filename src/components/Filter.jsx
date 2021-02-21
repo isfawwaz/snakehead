@@ -1,14 +1,39 @@
-import { HStack, Text, IconButton, Drawer, useDisclosure, DrawerOverlay, DrawerContent, DrawerCloseButton, DrawerHeader, DrawerBody, VStack, useMediaQuery, Box, Button } from "@chakra-ui/react";
-import { useRef } from "react";
+import { 
+    HStack, 
+    Text, 
+    IconButton, 
+    Drawer, 
+    useDisclosure, 
+    DrawerOverlay, 
+    DrawerContent, 
+    DrawerCloseButton, 
+    DrawerHeader, 
+    DrawerBody, 
+    VStack,
+    useMediaQuery, 
+    Box, 
+    Button, 
+    InputGroup,
+    Input,
+    InputRightElement
+} from "@chakra-ui/react";
+import { useContext, useEffect, useRef, useState } from "react";
 import Select from 'react-select';
 import sort from "../data/sort";
+import { ACTIONS, snakeHead, useFetchArea, useFetchSizes } from "../stores/hooks";
 import { isDesktop } from "../utils/ext";
 import Form from "./Form";
 import Icon from "./Icon";
 
-const Filter = ({ onSortChanged, onFilterChanged }) => {
-    const [ isMediaLarge ] = useMediaQuery( isDesktop() );
+const _ = require('lodash');
+
+const Filter = ({ onFilterChanged }) => {
     const options = sort;
+    const { provinces, cities } = useFetchArea();
+    const { sizes, filter, loading } = useFetchSizes();
+
+    const [ isMediaLarge ] = useMediaQuery( isDesktop() );
+    const [ selectedSort, setSelectedSort ] = useState([ options[0]]);
     const selectStyles = {
         container: provided => ({
             ...provided,
@@ -17,67 +42,96 @@ const Filter = ({ onSortChanged, onFilterChanged }) => {
     };
     const { isOpen, onOpen, onClose } = useDisclosure();
     const btnRef = useRef();
+    
+    let valueProvince = undefined;
+    
     const model = {
         province: {
             type: "select",
             label: "Provinsi",
             placeholder: "Filter provinsi",
-            options: [
-                {
-                    "value": "1",
-                    "label": "item 1"
-                },
-                {
-                    "value": "2",
-                    "label": "item 2"
-                }
-            ]
+            defaultValue: filter.area_provinsi,
+            options: provinces,
+            loading: loading
         },
         city: {
             type: "select",
             label: "Kota",
             placeholder: "Filter kota",
-            options: [
-                {
-                    "value": "1",
-                    "label": "item 1"
-                },
-                {
-                    "value": "2",
-                    "label": "item 2"
-                }
-            ]
+            defaultValue: filter.area_kota,
+            options: cities,
+            loading: loading
         },
         size: {
             type: "select",
             label: "Ukuran",
             placeholder: "Filter ukuran",
-            options: [
-                {
-                    "value": "1",
-                    "label": "item 1"
-                },
-                {
-                    "value": "2",
-                    "label": "item 2"
-                }
-            ]
+            defaultValue: filter.size,
+            options: sizes,
+            loading: loading
         },
         filter: {
             type: "submit",
-            label: "Filter"
+            label: "Filter",
+            loading: loading
         }
     };
 
-    const onFormSubmit = ( values, setSubmitting ) => {
-        setSubmitting(false);
-        onFilterChanged( values );
+    const onFormSubmit = ( values, setSubmitting, isClearClicked ) => {
+        if( isClearClicked ) {
+            onClose();
+        }
+        // setSubmitting( loading );
+        dispatch({
+            type: ACTIONS.FISH_FILTER,
+            province: values.province,
+            city: values.city,
+            size: values.size
+        });
+    }
+
+    const globalState = useContext(snakeHead);
+    const { state, dispatch } = globalState;
+    const onSortChanged = (value) => {
+        dispatch({
+            type: ACTIONS.FISH_SORT,
+            sort: value.value,
+            payload: state.fishes
+        });
+    }
+
+    const [ searchState, setSearchState ] = useState({
+        value: null,
+        typing: false,
+        typingTimeout: 0
+    });
+    const onSearchInputChange = (event) => {
+        if( searchState.typingTimeout ) {
+            clearTimeout( searchState.typingTimeout );
+        }
+
+        setSearchState({
+            value: event.target.value,
+            typing: false,
+            typingTimeout: setTimeout(function () {
+                dispatch({
+                    type: ACTIONS.FISH_FILTER,
+                    search: event.target.value
+                });
+            }, 300)
+        })
     }
 
     return <>
+        <HStack spacing={ 4 } mb={4}>
+            <InputGroup>
+                <Input type="search" variant="filled" placeholder="Cari komoditas, area atau lainnya..." onChange={ onSearchInputChange } />
+                <InputRightElement pointerEvents="none" children={ <Icon name="search-2" type="line" /> }/>
+            </InputGroup>
+        </HStack>
         <HStack justify="space-between" mb={ 4 }>
             <Text mr={2}>Urutkan</Text>
-            <Select options={ options } defaultValue="default" onChange={ onSortChanged } styles={ selectStyles } />
+            <Select options={ options } defaultValue={ selectedSort } onChange={ onSortChanged } styles={ selectStyles } />
             { isMediaLarge 
             ? <IconButton ref={ btnRef } onClick={ onOpen } fontWeight="normal" variant="outline" fontSize="xl" icon={ <Icon name="filter-3" type="line" /> } /> 
             : <Box pos="fixed" left={0} bottom={0} zIndex={ 10 } p={5} w="full">
@@ -94,7 +148,7 @@ const Filter = ({ onSortChanged, onFilterChanged }) => {
                     <DrawerBody>
                         <div className="sh-filter">
                             <VStack>
-                                <Form model={ model } onSubmit={ onFormSubmit } />
+                                <Form model={ model } onSubmit={ onFormSubmit } clear />
                             </VStack>
                         </div>
                     </DrawerBody>

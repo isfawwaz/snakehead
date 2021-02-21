@@ -3,7 +3,7 @@
  * Dikarenakan library UI yang berbeda dengan library asli,
  * sehingga komponen ini menggunakan library Formik sebagai validasi library nya.
  */
-import { Button, FormControl, FormErrorMessage, FormLabel, Input, InputGroup, InputLeftAddon, NumberDecrementStepper, NumberIncrementStepper, NumberInput, NumberInputField, NumberInputStepper, Stack, VStack } from '@chakra-ui/react';
+import { Button, FormControl, FormErrorMessage, FormLabel, HStack, Input, InputGroup, InputLeftAddon, NumberDecrementStepper, NumberIncrementStepper, NumberInput, NumberInputField, NumberInputStepper, Stack, VStack } from '@chakra-ui/react';
 import { Formik } from 'formik';
 import { useEffect, useRef, useState } from 'react';
 import Select from 'react-select';
@@ -52,13 +52,11 @@ const validate = async ( values, rules ) => {
         });
     });
 
-    console.log( errors )
-
     return errors;
 }
 
-const ElButton = ({ type, loading = false, children, }) => {
-    return <Button variant="solid" colorScheme="brand" type={ type } isLoading={ loading } isFullWidth>{ children }</Button>;
+const ElButton = ({ type, onClick, loading = false, children, colorScheme = undefined, variant = "solid" }) => {
+    return <Button variant={ variant } colorScheme={ colorScheme } type={ type } isLoading={ loading } onClick={ onClick } isFullWidth>{ children }</Button>;
 }
 
 const ElInput = ({ id, label, name, value, onChange, placeholder = null, autoComplete = false, type = 'text', required = false, disabled = false, invalid = false, error = null }) => {
@@ -128,7 +126,7 @@ const ElCurrency = ({ id, label, name, value, onChange, required = false, disabl
     </FormControl>;
 }
 
-const Form = ({ onSubmit, onChange, model = {} }) => {
+const Form = ({ onSubmit, onChange, clear = false, model = {} }) => {
     const defaultState = Object.keys(model).reduce((a, b) => {
         const { defaultValue, type } = model[b];
         if (type === 'date') {
@@ -148,6 +146,7 @@ const Form = ({ onSubmit, onChange, model = {} }) => {
         }
         return a;
     }, {});
+    const stateDefault = defaultState;
     
     const defaultCurrency = Object.keys(model).reduce((a, b) => {
         const { defaultValue } = model[b];
@@ -200,7 +199,19 @@ const Form = ({ onSubmit, onChange, model = {} }) => {
     const prevState = usePrevious(state);
 
     const onFormSubmit = ( values, { setSubmitting }) => {
-        onSubmit( state, setSubmitting );
+        onSubmit( state, setSubmitting, false );
+    }
+
+    const onFormCleared = () => {
+        const d = Object.keys(state).reduce( (a,b) => {
+            a[b] = "";
+            return a;
+        }, {});
+        setState({
+            ...state,
+            ...d
+        });
+        onSubmit( d, null, true );
     }
 
     const onChangeState = e => {
@@ -292,7 +303,7 @@ const Form = ({ onSubmit, onChange, model = {} }) => {
                         onChange={ value => onChangeCurrencyState( key, value ) }
                         placeholder={ model[key].placeholder }
                         required={ model[key].required || false }
-                        disabled={ isSubmitting }
+                        disabled={ model[key].loading || false }
                         invalid={ errors[key] && touched[key] }
                         error={ errors[key] } />);
                     break;
@@ -307,7 +318,7 @@ const Form = ({ onSubmit, onChange, model = {} }) => {
                         onChange={ value => onChangeCurrencyState( key, value ) }
                         placeholder={ model[key].placeholder }
                         required={ model[key].required || false }
-                        disabled={ isSubmitting }
+                        disabled={ model[key].loading || false }
                         invalid={ errors[key] && touched[key] }
                         error={ errors[key] } />);
                     break;
@@ -321,13 +332,16 @@ const Form = ({ onSubmit, onChange, model = {} }) => {
                         options={ options[key] }
                         onChange={ option => onChangeSelectState(key, option) }
                         onCreateOption={ inputValue => onCreateSelectOption( key, inputValue, model[key].onCreateOption ) }
-                        disabled={ isSubmitting }
+                        disabled={ model[key].loading || false }
                         placeholder={ model[key].placeholder }
                         invalid={ errors[key] && touched[key] }
                         error={ errors[key] } />);
                     break;
                 case 'submit':
-                    items.push(<ElButton key={ k } type={ model[key].type } loading={ isSubmitting }>{ model[key].label || key }</ElButton> )
+                    items.push(<HStack key={ k } spacing={ 4 } w="full">
+                        { clear ? <ElButton type="button" loading={ model[key].loading || false } onClick={ onFormCleared }>Bersihkan</ElButton> : false }
+                        <ElButton type={ model[key].type } loading={ model[key].loading || false } colorScheme="brand">{ model[key].label || key }</ElButton> 
+                    </HStack>)
                     break;
                 default:
                     items.push(<ElInput 
@@ -339,7 +353,7 @@ const Form = ({ onSubmit, onChange, model = {} }) => {
                         onChange={ onChangeState } 
                         placeholder={ model[key].placeholder } 
                         required={ model[key].required || false } 
-                        disabled={ isSubmitting } 
+                        disabled={ model[key].loading || false } 
                         autoComplete={ model[key].autoComplete }
                         invalid={ errors[key] && touched[key] }
                         error={ errors[key] } />);

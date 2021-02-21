@@ -2,7 +2,7 @@ import { Box, Stack } from "@chakra-ui/react";
 import { Fragment } from "react";
 import ConditionalWrapper from "./ConditialWrapper";
 
-export default function MenuLink({ children, isActive, leftIcon, ...props }) {
+export default function MenuLink({ children, isActive, leftIcon, onClick, ...props }) {
     const LeftIcon = leftIcon !== undefined ? leftIcon : "";
     return <Box as="button"
     className="sh-menu-link"
@@ -23,6 +23,7 @@ export default function MenuLink({ children, isActive, leftIcon, ...props }) {
         bg: "#baf3ec",
         color: "#1c917f"
     }}
+    onClick={ onClick }
     {...props}>
         <Stack direction="row" spacing={ 4 } align="center">
             <ConditionalWrapper condition={ leftIcon !== undefined } wrapper={ children => <div className="sh-icon">{children}</div>}>

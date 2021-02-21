@@ -1,8 +1,14 @@
 const SteinStore = require("stein-js-client");
 const store = new SteinStore("https://stein.efishery.com/v1/storages/5e1edf521073e315924ceab4");
 
+const _ = require('lodash');
+
 function checkObjectKey( key, obj ) {
-    if( obj === undefined || obj === null ) {
+    if( obj === undefined || _.isEmpty(obj) ) {
+        return false;
+    }
+
+    if( _.isEmpty(obj[key]) ) {
         return false;
     }
 
@@ -15,20 +21,20 @@ export const get = async(url, filter, cb, errCb = () => {}) => {
         if( 
             checkObjectKey( "uuid", filter )
             || checkObjectKey( "komoditas", filter )
-            || checkObjectKey( "areProvinsi", filter )
-            || checkObjectKey( "areKota", filter )
+            || checkObjectKey( "area_provinsi", filter )
+            || checkObjectKey( "area_kota", filter )
             || checkObjectKey( "size", filter )
             || checkObjectKey( "price", filter )
-            || checkObjectKey( "tglParsed", filter )
+            || checkObjectKey( "tanggal", filter )
             || checkObjectKey( "timestamp", filter )
         ) {
             f.search = {
                 uuid: !checkObjectKey( "uuid", filter ) ? void 0 : filter.uuid,
                 komoditas: !checkObjectKey( "komoditas", filter ) ? void 0 : filter.komoditas,
-                area_provinsi: !checkObjectKey( "areaProvinsi", filter ) ? void 0 : filter.areaProvinsi,
-                area_kota: !checkObjectKey( "areaKota", filter ) ? void 0 : filter.areaKota,
-                size: !checkObjectKey( "ukuran", filter ) ? void 0 : filter.size,
-                price: !checkObjectKey( "harga", filter ) ? void 0 : filter.price,
+                area_provinsi: !checkObjectKey( "area_provinsi", filter ) ? void 0 : filter.area_provinsi,
+                area_kota: !checkObjectKey( "area_kota", filter ) ? void 0 : filter.area_kota,
+                size: !checkObjectKey( "size", filter ) ? void 0 : filter.size,
+                price: !checkObjectKey( "price", filter ) ? void 0 : filter.price,
                 tgl_parsed: !checkObjectKey( "tanggal", filter ) ? void 0 : filter.tglParsed,
                 timestamp: !checkObjectKey( "timestamp", filter ) ? void 0 : filter.timestamp
             }

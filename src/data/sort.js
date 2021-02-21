@@ -5,7 +5,7 @@ const sort = [
     { value: "province-a-z", label: "Provinsi (A-Z)" },
     { value: "province-z-a", label: "Provinsi (Z-A)" },
     { value: "city-a-z", label: "Kota (A-Z)" },
-    { value: "city-z-a", label: "Kota (Z-Z)" },
+    { value: "city-z-a", label: "Kota (Z-A)" },
     { value: "price-a-z", label: "Harga Termurah" },
     { value: "price-z-a", label: "Harga Termahal" },
     { value: "size-a-z", label: "Ukuran Terkecil" },

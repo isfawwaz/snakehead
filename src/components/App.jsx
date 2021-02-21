@@ -2,56 +2,23 @@ import { Modal, ModalBody, ModalCloseButton, ModalContent, ModalFooter, ModalHea
 import { useEffect, useState } from 'react';
 import { Route, BrowserRouter, Switch, useHistory, withRouter } from 'react-router-dom';
 import { useGetFetchList } from '../stores/reducer';
-import Home from './../pages/Home';
 import Detail from './Detail';
 import DetailDefault from './DetailDefault';
-import FishForm from './FishForm';
 import ModalSwitch from './ModalSwitch';
 import Navbar from './Navbar';
 import Sidebar from './Sidebar';
 
-const ModalComponent = ({ history }) => {
-    const { isOpen, onOpen, onClose } = useDisclosure();
-    const handleClose = () => {
-        onClose();
-        history.goBack();
-    }
-    useEffect( () => {
-        onOpen();
-    }, []);
-    return <Modal isOpen={ isOpen } onClose={ handleClose } isCentered={ true } id="modal">
-        <ModalOverlay />
-        <ModalContent>
-            <ModalHeader>Tambah Data</ModalHeader>
-            <ModalCloseButton />
-            <ModalBody>
-                Modal
-            </ModalBody>
-            <ModalFooter>
-                Footer
-            </ModalFooter>
-        </ModalContent>
-    </Modal>;
-}
-const ModalElement = withRouter(ModalComponent);
+const _ = require('lodash');
 
 function App() {
     const {  isOpen, onOpen, onClose } = useDisclosure();
-    const { fishes } = useGetFetchList();
-
-    const [ total, setTotal ] = useState(0);
-    const [ data, setData ] = useState([]);
+    const { detail } = useGetFetchList();
 
     let history = useHistory();
 
     const handleAddClick = () => {
         history.push({ pathname: "add", state: { modal: true } })
     }
-    
-    useEffect( () => {
-        setData([...fishes]);
-        setTotal( data.length );
-    }, [fishes]);
 
     return <>
         <main className="app">
@@ -67,7 +34,9 @@ function App() {
                 <Route component={ ModalSwitch } />
             </section>
             <section className="sh-main-detail">
-                <FishForm />
+                { _.isEmpty(detail)
+                    ? <DetailDefault />
+                    : false }
             </section>
         </main>
     </>
