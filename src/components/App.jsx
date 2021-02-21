@@ -10,7 +10,7 @@ import {
     useMediaQuery, 
     useToast
 } from '@chakra-ui/react';
-import { useEffect, useRef, useState } from 'react';
+import { Fragment, useEffect, useRef, useState } from 'react';
 import { Route, BrowserRouter, Switch, useHistory, withRouter } from 'react-router-dom';
 import { useFishes } from '../stores/hooks';
 import { isDesktop } from '../utils/ext';
@@ -24,9 +24,13 @@ import Sidebar from './Sidebar';
 const _ = require('lodash');
 
 function App() {
-    const [ isOpen, setIsOpen ] = useState( false );
-    const onOpen = () => setIsOpen(true);
-    const onClose = () => setIsOpen(false);
+    // Navbar Drawer
+    const { isOpen, onOpen, onClose } = useDisclosure();
+
+    // Detail Drawer
+    const [ isDetailOpen, setIsDetailOpen ] = useState( false );
+    const onDetailOpen = () => setIsDetailOpen(true);
+    const onDetailClose = () => setIsDetailOpen(false);
     
     const btnRef = useRef();
     const [ isMediaLarge ] = useMediaQuery( isDesktop() );
@@ -60,24 +64,24 @@ function App() {
 
     useEffect( () => {
         if( isMediaLarge ) {
-            if( isOpen ) {
-                onClose();
+            if( isDetailOpen ) {
+                onDetailClose();
             }
         } else {
-            onOpen();
+            onDetailOpen();
         }
     }, [isMediaLarge]);
 
     useEffect( () => {
-        if( !isOpen ) {
-            onOpen();
+        if( !isDetailOpen ) {
+            onDetailOpen();
         }
     }, [detail]);
 
     return <>
         <main className="app">
             <section className="sh-main-sidebar">
-                <Sidebar onAddClicked={ handleAddClick }  />
+                <Sidebar isOpen={ isOpen } onOpen={ onOpen } onClose={ onClose } onAddClicked={ handleAddClick }  />
             </section>
             <section className="sh-main-content">
                 <Navbar onMenuClicked={ onOpen } onAddClicked={ handleAddClick } />
@@ -88,11 +92,13 @@ function App() {
                 <Route component={ ModalSwitch } />
             </section>
             <section className="sh-main-detail">
-                { _.isEmpty(detail)
+                <Route exact path="/">
+                    <Fragment>
+                        { _.isEmpty(detail)
                     ? <DetailDefault />
                     :  <ConditionalWrapper
                             condition={ !isMediaLarge }
-                            wrapper={ children => <Drawer blockScrollOnMount={ false } size="full" scrollBehavior="outside" isOpen={ isOpen } placement="right" onClose={ onClose } finalFocusRef={btnRef} id="detail" closeOnEsc={ true } closeOnOverlayClick={ true }>
+                            wrapper={ children => <Drawer blockScrollOnMount={ false } size="full" scrollBehavior="outside" isOpen={ isDetailOpen } placement="right" onClose={ onDetailClose } finalFocusRef={btnRef} id="detail" closeOnEsc={ true } closeOnOverlayClick={ true }>
                                 <DrawerOverlay>
                                     <DrawerContent>
                                         <DrawerBody p={0}>{children}</DrawerBody>
@@ -108,8 +114,10 @@ function App() {
                                 size={ detail.size }
                                 date={ detail.tgl_parsed }
                                 timestamp={ detail.timestamp }
-                                onBackClick={ onClose }/>
+                                onBackClick={ onDetailClose }/>
                         </ConditionalWrapper>}
+                    </Fragment>
+                </Route>
             </section>
         </main>
     </>

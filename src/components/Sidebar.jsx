@@ -25,8 +25,7 @@ import { Link } from "react-router-dom";
 import { checkMenu } from "../utils/ext";
 import { ACTIONS, snakeHead, useFishes } from "../stores/hooks";
 
-export default function Sidebar({ onAddClicked }) {
-    const {  isOpen, onOpen, onClose } = useDisclosure();
+export default function Sidebar({ isOpen, onOpen, onClose, onAddClicked }) {
     const [isMediaLarge] = useMediaQuery("(min-width: 992px)");
     const { filter } = useFishes();
     const { isAll, isGurame, isNila, isDori, isLele, isUdang } = checkMenu( filter );
@@ -38,6 +37,9 @@ export default function Sidebar({ onAddClicked }) {
             type: ACTIONS.FISH_FILTER,
             search: fish,
         });
+        if( !isMediaLarge ) {
+            onClose();
+        }
     }
     useEffect(() => {
         if( isMediaLarge ) {
