@@ -12,6 +12,7 @@ import Icon from './../components/Icon';
 import dataSort from './../data/sort';
 import Fish from '../components/Fish';
 import { useFetchList } from '../stores/reducer';
+import Filter from '../components/Filter';
 
 export default function Home() {
     // const [ sort, setSort ] = useState();
@@ -29,6 +30,7 @@ export default function Home() {
                 <InputRightElement pointerEvents="none" children={ <Icon name="search-2" type="line" /> }/>
             </InputGroup>
         </HStack>
+        <Filter />
         <VStack spacing={4} align="stretch">
             { data.map( (fish, indx) => <Fish key={ indx } name={ fish.komoditas } province={ fish.area_provinsi } city={ fish.area_kota } price={ fish.price } timestamp={ fish.timestamp } /> ) }
         </VStack>

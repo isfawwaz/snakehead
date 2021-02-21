@@ -19,12 +19,14 @@
     //     box-shadow: none !important;
     // }
 
-    .chakra-modal__overlay {
-        background: transparent !important;
-    }
-
-    .chakra-modal__overlay,
-    .chakra-modal__content-container {
-        width: 320px !important;
+    .chakra-portal {
+        .chakra-modal__overlay {
+            // background: transparent !important;
+            z-index: 1400;
+        }
+    
+        .chakra-modal__content-container {
+            width: 320px !important;
+        }
     }
 }

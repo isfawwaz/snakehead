@@ -3,7 +3,7 @@ import { useEffect, useState } from 'react';
 import FishImage from './FishImage';
 import Form from './Form';
 
-const FishForm = ({ labelButton = "Simpan", onFinish }) => {
+const FishForm = ({ labelButton = "Simpan", onFinish, avatar = true }) => {
     const [ values, setValues ] = useState({});
     const [ comodity, setComodity ] = useState( null );
 
@@ -83,7 +83,7 @@ const FishForm = ({ labelButton = "Simpan", onFinish }) => {
 
     return <div className="sh-fish-form">
         <VStack spacing={ 4 } py={ 8 }>
-            <FishImage name={ comodity } big />
+            { avatar ? <FishImage name={ comodity } big /> : false }
             <Box p={ 6 } w="full">
                 <Form model={ model } onSubmit={ onFormSubmit } onChange={ onFormChange } />
             </Box>

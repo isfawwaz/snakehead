@@ -20,6 +20,7 @@ import { ReactComponent as IkanLele } from './../assets/menu/img-lele.svg';
 import { ReactComponent as IkanNila } from './../assets/menu/img-nila.svg';
 import { ReactComponent as Udang } from './../assets/menu/img-udang.svg';
 import { useEffect } from "react";
+import ConditionalWrapper from "./ConditialWrapper";
 
 export default function Sidebar({ isOpen, onClose, onOpen }) {
     const [isMediaLarge] = useMediaQuery("(min-width: 992px)");
@@ -34,8 +35,8 @@ export default function Sidebar({ isOpen, onClose, onOpen }) {
         }
     }, [isMediaLarge])
     return <>
-        <Drawer placement="left" size="xs" isOpen={ isOpen } onClose={ onClose } trapFocus={ !isMediaLarge } blockScrollOnMount={ !isMediaLarge }>
-            <DrawerOverlay>
+        <Drawer id="sidebar" placement="left" size="xs" isOpen={ isOpen } onClose={ onClose } trapFocus={ !isMediaLarge } blockScrollOnMount={ !isMediaLarge } closeOnOverlayClick={ false } closeOnEsc={ false }>
+            <ConditionalWrapper condition={ !isMediaLarge } wrapper={ children => <DrawerOverlay>{children}</DrawerOverlay>}>
                 <DrawerContent>
                     { !isMediaLarge ? <DrawerCloseButton /> : false }
                     <DrawerHeader>
@@ -56,7 +57,7 @@ export default function Sidebar({ isOpen, onClose, onOpen }) {
                         </Stack>
                     </DrawerBody>
                 </DrawerContent>
-            </DrawerOverlay>
+            </ConditionalWrapper>
         </Drawer>
     </>
 }
