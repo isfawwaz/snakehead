@@ -3,7 +3,7 @@ import Icon from "./Icon";
 import Logo from './../assets/logo.svg';
 
 export default function Navbar({ onMenuClicked = () => {}, onAddClicked = () => {} }) {
-    return <Box p={3} bgColor="white" boxShadow="lg" zIndex="3" className="sh-navbar">
+    return <Box p={3} bgColor="white" boxShadow="xl" zIndex="3" className="sh-navbar" pos="relative">
         <HStack spacing={4} justify="space-between">
             <IconButton variant="outline" icon={ <Icon name="menu-2" type="line" /> } onClick={ onMenuClicked } />
             <div className="sh-logo">
