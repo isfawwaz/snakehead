@@ -53,7 +53,6 @@ export const useFetchList = () => {
                     type: ACTIONS.FISH_ERROR,
                     payload: e
                 })
-                console.log({e});
             });
         }
         fetch();
@@ -64,6 +63,5 @@ export const useFetchList = () => {
 
 export const useGetFetchList = () => {
     const [ state ] = useReducer( reducer, initState );
-    console.log(state);
     return state;
 }

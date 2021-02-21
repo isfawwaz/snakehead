@@ -31,7 +31,10 @@ export const sentenceSerial = (...args) => {
     return toSentenceSerial( items, " - ", " - " );
 }
 
-export const formatNumber = ( number ) => {
+export const formatNumber = ( number, reverse = false ) => {
+    if( reverse ) {
+        return toNumber( _.replace( number, ".", "" ) );
+    }
     return numberFormat( toNumber( number ), ",", "." );
 }
 
