@@ -48,7 +48,7 @@ export const get = async(url, filter, cb, errCb = () => {}) => {
 }
 
 export const post = async( url, data ) => {
-    return await store.append(url, data);
+    return await store.append(url, [data]);
 }
 
 export const update = async(url, id, data) => {

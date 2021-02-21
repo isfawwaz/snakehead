@@ -8,8 +8,7 @@ import {
     Stack,
     Divider,
     Button,
-    useMediaQuery,
-    useDisclosure
+    useMediaQuery
   } from "@chakra-ui/react"
 import MenuLink from './MenuLink';
 import Icon from './Icon';
@@ -21,12 +20,20 @@ import { ReactComponent as IkanNila } from './../assets/menu/img-nila.svg';
 import { ReactComponent as Udang } from './../assets/menu/img-udang.svg';
 import { useContext, useEffect } from "react";
 import ConditionalWrapper from "./ConditialWrapper";
-import { Link } from "react-router-dom";
 import { checkMenu } from "../utils/ext";
 import { ACTIONS, snakeHead, useFishes } from "../stores/hooks";
+import { useHistory, useLocation } from "react-router-dom";
+
+const _ = require('lodash');
 
 export default function Sidebar({ isOpen, onOpen, onClose, onAddClicked }) {
+    const location = useLocation();
+    const history = useHistory();
+
+    const isHome = !_.isEmpty( location.pathname.match(/^\/$/) );
+
     const [isMediaLarge] = useMediaQuery("(min-width: 992px)");
+    
     const { filter } = useFishes();
     const { isAll, isGurame, isNila, isDori, isLele, isUdang } = checkMenu( filter );
 
@@ -63,14 +70,16 @@ export default function Sidebar({ isOpen, onOpen, onClose, onAddClicked }) {
                     </DrawerHeader>
                     <DrawerBody>
                         <Stack direction="column" spacing={ 4 }>
-                            <MenuLink isActive={ isAll } leftIcon={ <Icon name="home-5" type="line" size="xl"/> } onClick={ () => onMenuClicked(undefined) }>Semua Data</MenuLink>
-                            <MenuLink isActive={ isGurame } leftIcon={ <IkanGurame /> } onClick={ () => onMenuClicked("Gurame") }>Ikan Gurame</MenuLink>
-                            <MenuLink isActive={ isNila } leftIcon={ <IkanNila /> } onClick={ () => onMenuClicked("Nila") }>Ikan Nila</MenuLink>
-                            <MenuLink isActive={ isDori } leftIcon={ <IkanDori /> } onClick={ () => onMenuClicked("Dori") }>Ikan Dori</MenuLink>
-                            <MenuLink isActive={ isLele } leftIcon={ <IkanLele /> } onClick={ () => onMenuClicked("Lele") }>Ikan Lele</MenuLink>
-                            <MenuLink isActive={ isUdang } leftIcon={ <Udang /> } onClick={ () => onMenuClicked("Udang Vannamei") }>Udang</MenuLink>
-                            <Divider/>
-                            <Button onClick={ onAddClicked } variant="solid" colorScheme="brand" leftIcon={ <Icon name="add" type="line" /> }>Tambah Baru</Button> 
+                            { isHome 
+                                ? <><MenuLink isActive={ isAll } leftIcon={ <Icon name="home-5" type="line" size="xl"/> } onClick={ () => onMenuClicked(undefined) }>Semua Data</MenuLink>
+                                    <MenuLink isActive={ isGurame } leftIcon={ <IkanGurame /> } onClick={ () => onMenuClicked("Gurame") }>Ikan Gurame</MenuLink>
+                                    <MenuLink isActive={ isNila } leftIcon={ <IkanNila /> } onClick={ () => onMenuClicked("Nila") }>Ikan Nila</MenuLink>
+                                    <MenuLink isActive={ isDori } leftIcon={ <IkanDori /> } onClick={ () => onMenuClicked("Dori") }>Ikan Dori</MenuLink>
+                                    <MenuLink isActive={ isLele } leftIcon={ <IkanLele /> } onClick={ () => onMenuClicked("Lele") }>Ikan Lele</MenuLink>
+                                    <MenuLink isActive={ isUdang } leftIcon={ <Udang /> } onClick={ () => onMenuClicked("Udang Vannamei") }>Udang</MenuLink>
+                                    <Divider/>
+                                    <Button onClick={ onAddClicked } variant="solid" colorScheme="brand" leftIcon={ <Icon name="add" type="line" /> }>Tambah Baru</Button> </> 
+                                : <MenuLink leftIcon={ <Icon name="arrow-left-s" type="line" size="xl" /> } onClick={ () => history.push("/") }>Kembali ke halaman utama</MenuLink> }
                         </Stack>
                     </DrawerBody>
                 </DrawerContent>

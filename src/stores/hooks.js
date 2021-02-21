@@ -38,7 +38,24 @@ export const ACTIONS = {
 
     DETAIL_REQUEST: "detail-request",
     DETAIL_RECEIVE: "detail-receive",
-    DETAIL_ERROR: "detail-error"
+    DETAIL_ERROR: "detail-error",
+
+    ADD_REQUEST: "add-request",
+    ADD_RECEIVE: "add-receive",
+    ADD_ERROR: "add-error",
+
+    EDIT_REQUEST: "edit-request",
+    EDIT_RECEIVE: "edit-receive",
+    EDIT_ERROR: "edit-error",
+    EDIT_CLEAR: "edit-clear",
+
+    UPDATE_REQUEST: "update-request",
+    UPDATE_RECEIVE: "update-receive",
+    UPDATE_ERROR: "update-error",
+
+    DELETE_REQUEST: "delete-request",
+    DELETE_RECEIVE: "delete-receive",
+    DELETE_ERROR: "delete-error"
 }
 
 const SortFilter = {
@@ -74,7 +91,8 @@ const initState = {
         tgl_parsed: void 0,
         timestamp: void 0,
     },
-    detail: {}
+    detail: {},
+    edit: {}
 }
 
 const reducer = ( state, action ) => {
@@ -255,13 +273,40 @@ const reducer = ( state, action ) => {
                 }
             }
         case ACTIONS.DETAIL_RECEIVE:
-            console.log("KEPANGGIL");
             return {
                 ...state,
                 loading: false,
                 detail: action.payload
             }
             break;
+
+        // ADD
+        case ACTIONS.ADD_REQUEST:
+            return {
+                ...state,
+                loading: true
+            }
+        case ACTIONS.ADD_ERROR:
+            return {
+                ...state,
+                loading: false,
+                errors: {
+                    ...state.errors,
+                    add: action.payload
+                }
+            }
+        case ACTIONS.ADD_RECEIVE:
+            return {
+                ...state,
+                loading: false,
+                addSuccess: action.payload
+            }
+
+        // EDIT
+
+        // UPDATE
+
+        // DELETE
 
         // DEFAULT
         default:

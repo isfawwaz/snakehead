@@ -50,6 +50,21 @@
     }
 }
 
+.sh-navbar {
+    position: relative;
+
+    .sh-logo {
+        width: auto;
+        height: 32px;
+        padding: 0;
+
+        img {
+            height: 100%;
+            width: auto;
+        }
+    }
+}
+
 .app {
     position: relative;
     z-index: 0;
@@ -81,6 +96,12 @@
             overflow-y: auto;
             overflow-x: hidden;
         }
+
+        .sh-main-content__wrapper {
+            width: 100%;
+            background-color: $grayscaleBackground;
+            padding: 32px;
+        }
     }
 
     .sh-main-detail {
@@ -88,21 +109,6 @@
         height: 100vh;
         overflow-y: auto;
         overflow-x: hidden;
-    }
-
-    .sh-navbar {
-        position: relative;
-
-        .sh-logo {
-            width: auto;
-            height: 32px;
-            padding: 0;
-
-            img {
-                height: 100%;
-                width: auto;
-            }
-        }
     }
 
     .sh-content {
@@ -113,12 +119,12 @@
 }
 
 @include media-breakpoint-up(sm) {
+    .sh-navbar {
+        display: none;
+    }
     .app {
         .sh-main-sidebar {
             width: 320px;
-        }
-        .sh-navbar {
-            display: none;
         }
     }
 }

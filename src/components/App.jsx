@@ -12,6 +12,7 @@ import {
 } from '@chakra-ui/react';
 import { Fragment, useEffect, useRef, useState } from 'react';
 import { Route, BrowserRouter, Switch, useHistory, withRouter } from 'react-router-dom';
+import Add from '../pages/Add';
 import Home from '../pages/Home';
 import { useFishes } from '../stores/hooks';
 import { isDesktop } from '../utils/ext';
@@ -63,13 +64,9 @@ function App() {
                 <Sidebar isOpen={ isOpen } onOpen={ onOpen } onClose={ onClose } onAddClicked={ handleAddClick }  />
             </section>
             <section className="sh-main-content">
-                {/* <Switch location={ isModal ? previousLocation : location }>
-                    <Route exact path="/" component={ Home } />
-                    <Route exact path="/add"><ModalElement /></Route>
-                </Switch> */}
-                {/* <Route component={ ModalSwitch } /> */}
                 <Switch>
                     <Route exact path="/" component={ Home } />
+                    <Route exact path="/add" component={ Add } />
                 </Switch>
             </section>
         </main>
