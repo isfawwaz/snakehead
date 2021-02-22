@@ -11,6 +11,7 @@ import {
 import { useEffect, useState } from "react";
 import { useFishes } from "../stores/hooks";
 import { formatDate, formatDateHuman, formatNumber, isDesktop, sentenceSerial } from "../utils/ext";
+import AlertConfirmation from "./AlertConfimation";
 import FishImage from "./FishImage";
 import Icon from "./Icon";
 
@@ -26,6 +27,9 @@ export default function Fish({ id, name, province, city, price, timestamp, onEdi
     
     const { detail } = useFishes();
     const [ isActive, setIsActive ] = useState(false);
+
+    const [ isDelete, setIsDelete ] = useState(false);
+    const onClose = () => setIsDelete(false);
 
     useEffect( () => {
         if( detail.uuid == id ) {
@@ -63,8 +67,9 @@ export default function Fish({ id, name, province, city, price, timestamp, onEdi
         <Box pos="absolute" top=".5rem" right="1rem" bg={ isActive ? "brand.500" : "white" } pl={ 4 } display={ hover && isMediaLarge ? "block" : "none" }>
             <HStack>
                 <IconButton onClick={ onEditClick } color={ isActive ? "white" : "gray.400" } colorScheme={ isActive ? "blackAlpha" : "gray" } fontWeight="normal" variant="ghost" size="sm" isRound icon={ <Icon name="edit" type="line" /> } />
-                <IconButton onClick={ onDeleteClick } color={ isActive ? "white" : "red.400" } colorScheme={ isActive ? "blackAlpha" : "gray" } fontWeight="normal" variant="ghost" size="sm" isRound icon={ <Icon name="delete-bin-7" type="line" /> } />
+                <IconButton onClick={ () => setIsDelete(true) } color={ isActive ? "white" : "red.400" } colorScheme={ isActive ? "blackAlpha" : "gray" } fontWeight="normal" variant="ghost" size="sm" isRound icon={ <Icon name="delete-bin-7" type="line" /> } />
             </HStack>
         </Box>
+        <AlertConfirmation id={ id } name={ name } onDelete={ onDeleteClick } isOpen={ isDelete } onClose={ onClose } />
     </Box>;
 }

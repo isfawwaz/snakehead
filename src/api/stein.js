@@ -15,7 +15,7 @@ function checkObjectKey( key, obj ) {
     return ( key in obj ) && obj[key] !== undefined;
 }
 
-export const get = async(url, filter, cb, errCb = () => {}) => {
+export const get = async(url, filter, cb = () => {}, errCb = () => {}) => {
     let f = {};
     if( filter !== null || filter !== undefined ) {
         if( 
@@ -47,19 +47,31 @@ export const get = async(url, filter, cb, errCb = () => {}) => {
     });
 }
 
-export const post = async( url, data ) => {
-    return await store.append(url, [data]);
-}
-
-export const update = async(url, id, data) => {
-    return await store.edit(url, {
-        search: { uuid: id },
-        set: data
+export const post = async( url, data, cb = () => {}, errCb = () => {} ) => {
+    return await store.append(url, [data]).then( items => {
+        cb( items );
+    }, error => {
+        errCb( error );
     });
 }
 
-export const deleteApi = async(url, id) => {
+export const update = async(url, id, data, cb = () => {}, errCb = () => {}) => {
+    return await store.edit(url, {
+        search: { uuid: id },
+        set: data
+    }).then( items => {
+        cb( items );
+    }, error => {
+        errCb( error );
+    });
+}
+
+export const deleteApi = async(url, id, cb = () => {}, errCb = () => {} ) => {
     return await store.delete(url, {
         search: { uuid: id }
+    }).then( items => {
+        cb( items );
+    }, error => {
+        errCb( error );
     });
 }

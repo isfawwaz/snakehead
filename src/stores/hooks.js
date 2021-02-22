@@ -27,6 +27,7 @@ export const ACTIONS = {
     FISH_SEARCH: "fish-search",
     FISH_SORT: "fish-sort",
     FISH_FILTER: "fish-filter",
+    FISH_REMOVE: "fis-remove",
 
     AREA_REQUEST: "area-request",
     AREA_RECEIVE: "area-receive",
@@ -39,6 +40,7 @@ export const ACTIONS = {
     DETAIL_REQUEST: "detail-request",
     DETAIL_RECEIVE: "detail-receive",
     DETAIL_ERROR: "detail-error",
+    DETAIL_CLEAR: "detail-clear",
 
     ADD_REQUEST: "add-request",
     ADD_RECEIVE: "add-receive",
@@ -55,10 +57,11 @@ export const ACTIONS = {
 
     DELETE_REQUEST: "delete-request",
     DELETE_RECEIVE: "delete-receive",
-    DELETE_ERROR: "delete-error"
+    DELETE_ERROR: "delete-error",
+    DELETE_CLEAR: "delete-clear"
 }
 
-const SortFilter = {
+export const SortFilter = {
     DEFAULT: "default",
     NAME_ASC: "name-a-z",
     NAME_DESC: "name-z-a",
@@ -152,7 +155,7 @@ const reducer = ( state, action ) => {
                     fishes.sort( (a,b) => theSort(a,b, "size", false));
                     break;
                 default:
-                    fishes.sort( (a,b) => theSort(a,b, "timestamp", false));
+                    fishes.sort( (a,b) => theSort(a,b, "timestamp"));
                     // fishes.sort( (a,b) => toNumber(a.timestamp) > toNumber(b.timestamp) );
                     break;
             }
@@ -173,6 +176,13 @@ const reducer = ( state, action ) => {
                     size: action.size
                 }
             }
+        case ACTIONS.FISH_REMOVE:
+            const f = action.data;
+            f.splice( action.payload, 1 );
+            return {
+                ...state,
+                fishes: f
+            };
 
         // AREA
         case ACTIONS.AREA_REQUEST:
@@ -278,6 +288,13 @@ const reducer = ( state, action ) => {
                 loading: false,
                 detail: action.payload
             }
+        case ACTIONS.DETAIL_CLEAR:
+            return {
+                ...state,
+                loading: false,
+                detail: {},
+                // deleteSuccess: false
+            }
             break;
 
         // ADD
@@ -355,6 +372,32 @@ const reducer = ( state, action ) => {
             }
 
         // DELETE
+        case ACTIONS.DELETE_REQUEST:
+            return {
+                ...state,
+                loading: true
+            }
+        case ACTIONS.DELETE_ERROR:
+            return {
+                ...state,
+                loading: false,
+                errors: {
+                    ...state.errors,
+                    delete: action.payload
+                }
+            }
+        case ACTIONS.DELETE_RECEIVE:
+            return {
+                ...state,
+                loading: false,
+                deleteSuccess: true
+            }
+        case ACTIONS.DELETE_CLEAR:
+            return {
+                ...state,
+                loading: false,
+                deleteSuccess: false
+            }
 
         // DEFAULT
         default:
@@ -378,7 +421,7 @@ export const useFetchFishes = () => {
         dispatch({ type: ACTIONS.FISH_REQUEST });
         async function fetch() {
             await api.get("list", state.filter, (items) => {
-                let data = items.filter( item => item.uuid != null && momment().unix() >= item.timestamp );
+                let data = items.filter( item => item.uuid != null /*&& momment().unix() >= item.timestamp*/ );
                 dispatch({
                     type: ACTIONS.FISH_SORT,
                     sort: SortFilter.DEFAULT,
@@ -470,6 +513,49 @@ export const useFetchEditFish = (id) => {
 export const useFishes = () => {
     const globalState = useContext(snakeHead);
     const { state } = globalState;
+    return state;
+}
+
+export const loadFish = ({ state, dispatch }) => {
+    dispatch({ type: ACTIONS.FISH_REQUEST });
+    async function fetch() {
+        await api.get("list", state.filter, (items) => {
+            let data = items.filter( item => item.uuid != null /*&& momment().unix() >= item.timestamp*/ );
+            dispatch({
+                type: ACTIONS.FISH_SORT,
+                sort: SortFilter.DEFAULT,
+                payload: data
+            });
+        }, (e) => {
+            dispatch({
+                type: ACTIONS.FISH_ERROR,
+                payload: e
+            })
+        });
+    }
+    fetch();
+
+    return state;
+}
+
+export const deleteFish = ({ state, dispatch }, id) => {
+    dispatch({ type: ACTIONS.DELETE_REQUEST });
+    async function fetch() {
+        await api.deleteApi("list", id, () => {
+            dispatch({ type: ACTIONS.DELETE_RECEIVE });
+            dispatch({ type: ACTIONS.DETAIL_CLEAR });
+            setTimeout(() => {
+                dispatch({ type: ACTIONS.DELETE_CLEAR });
+            }, 500);
+        }, (e) => {
+            dispatch({
+                type: ACTIONS.DELETE_ERROR,
+                payload: e
+            });
+        });
+    }
+    fetch();
+
     return state;
 }
 

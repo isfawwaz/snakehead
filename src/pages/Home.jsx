@@ -13,7 +13,7 @@ import {
     VStack
 } from "@chakra-ui/react";
 import Fish from '../components/Fish';
-import { ACTIONS, snakeHead, useFetchFishes } from '../stores/hooks';
+import { ACTIONS, deleteFish, loadFish, snakeHead, useFetchFishes } from '../stores/hooks';
 import Filter from '../components/Filter';
 import { useHistory, withRouter } from 'react-router-dom';
 import * as api from '../api/stein';
@@ -28,7 +28,7 @@ function Home() {
     const history = useHistory();
     const [ data, setData ] = useState([]);
 
-    const { fishes, sort, loading, detail } = useFetchFishes();
+    const { fishes, sort, detail, deleteSuccess } = useFetchFishes();
 
     // Detail Drawer
     const [ isDetailOpen, setIsDetailOpen ] = useState( false );
@@ -61,12 +61,14 @@ function Home() {
         dispatch({ type: ACTIONS.DETAIL_REQUEST });
         async function fetch() {
             await api.get("list", { uuid: id }, (items) => {
+                let i = {};
                 if( !_.isEmpty(items) ) {
-                    dispatch({
-                        type: ACTIONS.DETAIL_RECEIVE,
-                        payload: items[0]
-                    });
+                    i = items[0]
                 }
+                dispatch({
+                    type: ACTIONS.DETAIL_RECEIVE,
+                    payload: i
+                });
             }, (e) => {
                 dispatch({
                     type: ACTIONS.DETAIL_ERROR,
@@ -80,6 +82,12 @@ function Home() {
     useEffect( () => {
         setData([...fishes]);
     }, [fishes, sort]);
+
+    useEffect( () => {
+        if( deleteSuccess ) {
+            loadFish( globalState );
+        }
+    }, [deleteSuccess]);
     
     return <>
         <div className="sh-main-content__list">
@@ -94,7 +102,8 @@ function Home() {
                     price={ fish.price }
                     timestamp={ fish.timestamp }
                     onClick={ () => onItemClicked( fish.uuid ) }
-                    onEditClick={ () => history.push("/edit/" + fish.uuid) } /> ) }
+                    onEditClick={ () => history.push("/edit/" + fish.uuid) }
+                    onDeleteClick={ () => deleteFish(globalState, fish.uuid) } /> ) }
             </VStack>
         </div>
         <div className="sh-main-content__detail">
