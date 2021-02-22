@@ -1,10 +1,15 @@
 import { Divider, HStack, IconButton, Table, Tbody, Td, Text, Th, Tr, useMediaQuery, VStack } from "@chakra-ui/react"
+import { useHistory } from "react-router-dom";
 import { caps, formatDate, formatNumber, isDesktop } from "../utils/ext";
 import FishImage from "./FishImage"
 import Icon from "./Icon";
 
 const Detail = ({ id, name, onBackClick, province = null, city = null, price = 0, size = 0, date = null, timestamp = null }) => {
     const [ isMediaLarge ] = useMediaQuery( isDesktop() );
+
+    const history = useHistory();
+
+    const onEditClick = () => history.push("/edit/" + id);
     
     return <div className="sh-fish-detail">
         <HStack p={ 4 } justify="space-between">
@@ -13,7 +18,7 @@ const Detail = ({ id, name, onBackClick, province = null, city = null, price = 0
                 <Text fontSize="lg" color="gray.500" fontWeight="500">Detail Ikan: { name }</Text>
             </HStack>
             <HStack>
-                <IconButton color="gray.400" size="lg" fontSize="2xl" fontWeight="normal" variant="ghost" icon={ <Icon name="edit" type="line" /> } />
+                <IconButton onClick={ onEditClick } color="gray.400" size="lg" fontSize="2xl" fontWeight="normal" variant="ghost" icon={ <Icon name="edit" type="line" /> } />
                 <IconButton color="red.400" size="lg" fontSize="2xl" fontWeight="normal" variant="ghost" icon={ <Icon name="delete-bin-7" type="line" /> } />
             </HStack>
         </HStack>
