@@ -47,9 +47,8 @@ export default function Fish({ id, name, province, city, price, timestamp, onEdi
     cursor="pointer"
     zIndex={ isActive ? 2 : 0 }
     onMouseEnter={ () => setHover(true) }
-    onMouseLeave={ () => setHover(false) }
-    onClick={ onClick }>
-        <HStack spacing={4} align="stretch">
+    onMouseLeave={ () => setHover(false) }>
+        <HStack spacing={4} align="stretch" onClick={ onClick }>
             {/* <Avatar name={ name } src="https://bit.ly/broken-link" size="lg" colorScheme="teal" /> */}
             <FishImage name={ name } inverted={ isActive } />
             <VStack spacing={ 1 } align="flex-start" justify="flex-start" w="full" h="full">
