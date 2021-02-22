@@ -18,9 +18,9 @@ const Add = () => {
         const data = {
             uuid: uuidv4(),
             komoditas: values.name,
-            area_provinsi: values.province,
-            area_kota: values.city,
-            size: values.size,
+            area_provinsi: values.province.value,
+            area_kota: values.city.value,
+            size: values.size.value,
             price: values.price,
             tgl_parsed: momment().format(),
             timestamp: momment().unix()

@@ -272,7 +272,7 @@ const Form = ({ onSubmit, onChange, clear = false, model = {} }) => {
 
     const onChangeSelectState = ( name, selectedOption ) => {
         const changedObject = {};
-        changedObject[name] = selectedOption === null ? '' : selectedOption.value;
+        changedObject[name] = selectedOption === null ? '' : selectedOption;
         setState({
             ...state,
             ...changedObject,
