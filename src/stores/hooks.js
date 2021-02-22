@@ -1,6 +1,7 @@
 import * as api from './../api/stein';
 import { createContext, useContext, useEffect, useReducer } from "react";
 import { caps, momment } from '../utils/ext';
+import { toNumber } from 'underscore.string';
 
 const _ = require('lodash');
 
@@ -82,7 +83,7 @@ const initState = {
     sizes: [],
     loading: false,
     errors: {},
-    sort: SortFilter.DEFAULT,
+    sort: null,
     filter: {
         search: void 0,
         uuid: void 0,
@@ -155,8 +156,12 @@ const reducer = ( state, action ) => {
                     fishes.sort( (a,b) => theSort(a,b, "size", false));
                     break;
                 default:
-                    fishes.sort( (a,b) => theSort(a,b, "timestamp"));
-                    // fishes.sort( (a,b) => toNumber(a.timestamp) > toNumber(b.timestamp) );
+                    fishes.sort( (a,b) => theSort(a,b, "timestamp", false));
+                    // fishes.sort( (a,b) => {
+                    //     if(toNumber(a.timestamp) > toNumber(b.timestamp)) { return -1; }
+                    //     if(toNumber(a.timestamp) < toNumber(b.timestamp)) { return 1; }
+                    //     return 0;
+                    // });
                     break;
             }
             return {
@@ -418,23 +423,7 @@ export const useFetchFishes = () => {
     const globalState = useContext(snakeHead);
     const { state, dispatch } = globalState;
     useEffect( () => {
-        dispatch({ type: ACTIONS.FISH_REQUEST });
-        async function fetch() {
-            await api.get("list", state.filter, (items) => {
-                let data = items.filter( item => item.uuid != null /*&& momment().unix() >= item.timestamp*/ );
-                dispatch({
-                    type: ACTIONS.FISH_SORT,
-                    sort: SortFilter.DEFAULT,
-                    payload: data
-                });
-            }, (e) => {
-                dispatch({
-                    type: ACTIONS.FISH_ERROR,
-                    payload: e
-                })
-            });
-        }
-        fetch();
+        loadFish({ state, dispatch });
     }, [ state.filter ]);
     return state;
 }
@@ -517,15 +506,24 @@ export const useFishes = () => {
 }
 
 export const loadFish = ({ state, dispatch }) => {
+    const data = [];
     dispatch({ type: ACTIONS.FISH_REQUEST });
     async function fetch() {
         await api.get("list", state.filter, (items) => {
-            let data = items.filter( item => item.uuid != null /*&& momment().unix() >= item.timestamp*/ );
-            dispatch({
-                type: ACTIONS.FISH_SORT,
-                sort: SortFilter.DEFAULT,
-                payload: data
+            items.filter( item => item.uuid != null && momment().unix() >= item.timestamp ).forEach( item => {
+                data.push(item);
             });
+            setTimeout(() => {
+                dispatch({
+                    type: ACTIONS.FISH_RECEIVE,
+                    payload: data
+                });
+                dispatch({
+                    type: ACTIONS.FISH_SORT,
+                    sort: SortFilter.DEFAULT,
+                    payload: data
+                });
+            }, 500);
         }, (e) => {
             dispatch({
                 type: ACTIONS.FISH_ERROR,
