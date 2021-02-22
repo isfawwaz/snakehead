@@ -3,13 +3,15 @@
  * Dikarenakan library UI yang berbeda dengan library asli,
  * sehingga komponen ini menggunakan library Formik sebagai validasi library nya.
  */
-import { Button, FormControl, FormErrorMessage, FormLabel, HStack, Input, InputGroup, InputLeftAddon, NumberDecrementStepper, NumberIncrementStepper, NumberInput, NumberInputField, NumberInputStepper, Stack, VStack } from '@chakra-ui/react';
+import { Button, FormControl, FormErrorMessage, FormLabel, HStack, Input, NumberDecrementStepper, NumberIncrementStepper, NumberInput, NumberInputField, NumberInputStepper, VStack } from '@chakra-ui/react';
 import { Formik } from 'formik';
-import { useEffect, useRef, useState } from 'react';
+import { useEffect, useLayoutEffect, useRef, useState } from 'react';
 import Select from 'react-select';
 import CreatableSelect from 'react-select/creatable';
+import AsyncCreatableSelect from 'react-select/async-creatable';
 import { formatNumber } from './../utils/ext';
 import * as yup from 'yup';
+import useDeepCompareEffect from 'use-deep-compare-effect';
 
 const _ = require('lodash');
 
@@ -59,14 +61,19 @@ const ElButton = ({ type, onClick, loading = false, children, colorScheme = unde
     return <Button variant={ variant } colorScheme={ colorScheme } type={ type } isLoading={ loading } onClick={ onClick } isFullWidth>{ children }</Button>;
 }
 
-const ElInput = ({ id, label, name, value, onChange, placeholder = null, autoComplete = false, type = 'text', required = false, disabled = false, invalid = false, error = null }) => {
+const ElInput = ({ id, label, name, defaultValue, onChange, placeholder = null, autoComplete = false, type = 'text', required = false, disabled = false, invalid = false, error = null }) => {
+    const [ val, setVal ] = useState(defaultValue);
+    const handleChange = e => {
+        setVal(e.currentTarget.value);
+        onChange(e);
+    }
     return <FormControl id={ id } isRequired={ required } isDisabled={ disabled } isInvalid={ invalid }>
         <FormLabel>{label}</FormLabel>
         <Input 
             type={ type } 
             name={ name } 
-            onChange={ onChange }
-            value={ value }
+            onChange={ handleChange }
+            value={ val }
             placeholder={ placeholder }
             autoComplete={ autoComplete ? '' : 'off' } />
         <FormErrorMessage>{ error }</FormErrorMessage>
@@ -74,7 +81,7 @@ const ElInput = ({ id, label, name, value, onChange, placeholder = null, autoCom
 }
 
 const ElSelect = ({ id, label, name, defaultValue, options, onChange, onCreateOption, placeholder = null, required = false, disabled = false, creatable = false, searchable = true, clearable = true, invalid = false, error = null }) => {
-    const SelectComponent = creatable ? CreatableSelect : Select;
+    const SelectComponent = creatable ? AsyncCreatableSelect : Select;
     return <FormControl id={ id } isRequired={ required } isDisabled={ disabled } isInvalid={ invalid }>
         <FormLabel>{ label }</FormLabel>
         <SelectComponent 
@@ -132,9 +139,23 @@ const Form = ({ onSubmit, onChange, clear = false, model = {} }) => {
         if (type === 'date') {
             a[b] = defaultValue ? defaultValue.toISOString() : '';
         } else if (type === 'select') {
-            a[b] = defaultValue
-                ? model[b].options.find(option => option.value === defaultValue)
-                : '';
+            let v = '';
+            if( defaultValue ) {
+                const f = model[b].options.filter( o => o.hasOwnProperty('options') );
+                if( f.length > 0 ) {
+                    const g = f.filter( o => o.options.find( option => option.value === defaultValue ) );
+                    const h = g[0].options.filter( option => option.value === defaultValue );
+                    v = h[0];
+                } else {
+                    v = model[b].options.find(option => option.value === defaultValue);
+                }
+            }
+            a[b] = v;
+            // a[b] = defaultValue || '';
+            // a[b] = defaultValue
+            //     ? model[b].options.find(option => option.value === defaultValue)
+            //     : '';
+            // console.log(b, a[b]);
         } else if ( type === 'number' || type === 'currency' ) {
             a[b] = defaultValue || 0;
         } else if (type === 'checkbox') {
@@ -167,10 +188,16 @@ const Form = ({ onSubmit, onChange, clear = false, model = {} }) => {
         let requiredErrString = `Harap isi ${model[b].label||b} terlebih dahulu`;
 
         if( model[b].type == 'select' ) {
+            const requiredOption = yup.object()
+                .shape({
+                    value: yup.string(),
+                    label: yup.string(),
+                })
+                .nullable();
             if( model[b].required ) {
-                a[b] = yup.string().required(`Harap pilih salah satu opsi ${model[b].label||b}`);
+                a[b] = requiredOption.required(`Harap pilih salah satu opsi ${model[b].label||b}`);
             } else {
-                a[b] = yup.string();
+                a[b] = requiredOption;
             }
         } else if ( model[b].type == 'number' || model[b].type == 'currency' ) {
             let moreErrString = `${model[b].label||b} harus bernilai lebih besar dari 0`
@@ -191,7 +218,11 @@ const Form = ({ onSubmit, onChange, clear = false, model = {} }) => {
     }, {})
     const validationScheme = yup.object().shape(rules);
 
-    const formItems = [];
+    // const formItems = [];
+
+    // useEffect( () => {
+    //     console.log(stateDefault);
+    // }, [defaultState]);
 
     const [ state, setState ] = useState(defaultState);
     const [ currency, setCurrency ] = useState( defaultCurrency );
@@ -287,13 +318,14 @@ const Form = ({ onSubmit, onChange, clear = false, model = {} }) => {
         });
     }
 
+    const formItems = [];
     const getFormItems = ( isSubmitting, errors, touched ) => {
-        const items = [];
+        formItems.length = 0;
         let k = 0
         Object.keys(model).forEach( key => {
             switch( model[key].type ) {
                 case 'currency':
-                    items.push(<ElCurrency
+                    formItems.push(<ElCurrency
                         key={ k }
                         id={ key }
                         label={ model[key].label || key }
@@ -308,7 +340,7 @@ const Form = ({ onSubmit, onChange, clear = false, model = {} }) => {
                         error={ errors[key] } />);
                     break;
                 case 'number':
-                    items.push(<ElNumber
+                    formItems.push(<ElNumber
                         key={ k }
                         id={ key }
                         label={ model[key].label || key }
@@ -323,47 +355,83 @@ const Form = ({ onSubmit, onChange, clear = false, model = {} }) => {
                         error={ errors[key] } />);
                     break;
                 case 'select':
-                    items.push(<ElSelect 
-                        key={ k }
-                        id={key}
-                        label={ model[key].label || key }
-                        name={ key }
-                        defaultValue={ state[key] }
-                        options={ options[key] }
-                        onChange={ option => onChangeSelectState(key, option) }
-                        onCreateOption={ inputValue => onCreateSelectOption( key, inputValue, model[key].onCreateOption ) }
-                        disabled={ model[key].loading || false }
-                        placeholder={ model[key].placeholder }
-                        invalid={ errors[key] && touched[key] }
-                        error={ errors[key] } />);
+                    // const SelectComponent = (model[key].creatable || true) ? CreatableSelect : Select;
+                    formItems.push(<FormControl key={ k } id={ key } isRequired={ model[key].required || false } isDisabled={ model[key].loading || false } isInvalid={ errors[key] && touched[key] }>
+                        <FormLabel>{ model[key].label || key }</FormLabel>
+                        <CreatableSelect 
+                            name={ key }
+                            id={ key }
+                            searchable={ model[key].searchable || true }
+                            isClearable={ model[key].clearable || true }
+                            required={ model[key].required || false }
+                            value={ state[key] }
+                            options={ options[key] }
+                            onChange={ option => onChangeSelectState(key, option) }
+                            onCreateOption={ inputValue => onCreateSelectOption( key, inputValue, model[key].onCreateOption ) }
+                            isDisabled={ model[key].loading || false }
+                            placeholder={ model[key].placeholder }/>
+                        <FormErrorMessage>{errors[key]}</FormErrorMessage>
+                    </FormControl>);
+                    // items.push(<ElSelect 
+                    //     key={ k }
+                    //     id={key}
+                    //     label={ model[key].label || key }
+                    //     name={ key }
+                    //     defaultValue={ state[key] }
+                    //     options={ options[key] }
+                    //     onChange={ option => onChangeSelectState(key, option) }
+                    //     onCreateOption={ inputValue => onCreateSelectOption( key, inputValue, model[key].onCreateOption ) }
+                    //     disabled={ model[key].loading || false }
+                    //     placeholder={ model[key].placeholder }
+                    //     invalid={ errors[key] && touched[key] }
+                    //     error={ errors[key] } />);
                     break;
                 case 'submit':
-                    items.push(<HStack key={ k } spacing={ 4 } w="full">
+                    formItems.push(<HStack key={ k } spacing={ 4 } w="full">
                         { clear ? <ElButton type="button" loading={ model[key].loading || false } onClick={ onFormCleared }>Bersihkan</ElButton> : false }
                         <ElButton type={ model[key].type } loading={ model[key].loading || false } colorScheme="brand">{ model[key].label || key }</ElButton> 
                     </HStack>)
                     break;
                 default:
-                    items.push(<ElInput 
-                        key={ k }
-                        type={ model[key].type }
-                        id={key}
-                        label={ model[key].label || key } 
-                        name={ key }
-                        onChange={ onChangeState } 
-                        placeholder={ model[key].placeholder } 
-                        required={ model[key].required || false } 
-                        disabled={ model[key].loading || false } 
-                        autoComplete={ model[key].autoComplete }
-                        invalid={ errors[key] && touched[key] }
-                        error={ errors[key] } />);
+                    // items.push(<ElInput 
+                    //     key={ k }
+                    //     type={ model[key].type }
+                    //     id={key}
+                    //     label={ model[key].label || key } 
+                    //     name={ key }
+                    //     defaultValue={ state[key] }
+                    //     onChange={ onChangeState } 
+                    //     placeholder={ model[key].placeholder } 
+                    //     required={ model[key].required || false } 
+                    //     disabled={ model[key].loading || false } 
+                    //     autoComplete={ model[key].autoComplete }
+                    //     invalid={ errors[key] && touched[key] }
+                    //     error={ errors[key] } />);
+                    formItems.push(<FormControl key={ k } id={ key } isRequired={ model[key].required || false } isDisabled={ model[key].loading || false } isInvalid={ errors[key] && touched[key] }>
+                        <FormLabel>{ model[key].label || key }</FormLabel>
+                        <Input 
+                            type={ model[key].type } 
+                            name={ key } 
+                            onChange={ onChangeState }
+                            value={ state[key] }
+                            placeholder={ model[key].placeholder }
+                            autoComplete={ model[key].autoComplete ? '' : 'off' } />
+                        <FormErrorMessage>{ errors[key] }</FormErrorMessage>
+                    </FormControl>)
                     break;
             }
             k = k + 1;
         });
 
-        return items;
+        return formItems;
     }
+
+    useDeepCompareEffect( () => {
+        setState(defaultState);
+        setOptions(defaultSelectOptions);
+    }, [defaultState, defaultSelectOptions]);
+
+    // console.log(state);
 
     useEffect( () => {
         if( onChange ) {

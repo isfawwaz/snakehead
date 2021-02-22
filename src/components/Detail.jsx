@@ -1,5 +1,4 @@
-import { Divider, Heading, HStack, IconButton, Table, Tbody, Td, Text, Th, Tr, useMediaQuery, VStack } from "@chakra-ui/react"
-import { Link } from "react-router-dom";
+import { Divider, HStack, IconButton, Table, Tbody, Td, Text, Th, Tr, useMediaQuery, VStack } from "@chakra-ui/react"
 import { caps, formatDate, formatNumber, isDesktop } from "../utils/ext";
 import FishImage from "./FishImage"
 import Icon from "./Icon";

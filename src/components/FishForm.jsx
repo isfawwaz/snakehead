@@ -4,7 +4,7 @@ import { useFetchArea, useFetchSizes } from '../stores/hooks';
 import FishImage from './FishImage';
 import Form from './Form';
 
-const FishForm = ({ labelButton = "Simpan", onFinish, avatar = true }) => {
+const FishForm = ({ onFinish, name, province, city, size, price, labelButton = "Simpan", avatar = true }) => {
     const { provinces, cities } = useFetchArea();
     const { sizes, loading } = useFetchSizes();
 
@@ -17,7 +17,8 @@ const FishForm = ({ labelButton = "Simpan", onFinish, avatar = true }) => {
             required: true,
             label: "Komoditas",
             placeholder: "Nama komoditas",
-            loading: loading
+            loading: loading,
+            defaultValue: name
         },
         "province": {
             type: "select",
@@ -25,7 +26,8 @@ const FishForm = ({ labelButton = "Simpan", onFinish, avatar = true }) => {
             label: "Provinsi",
             placeholder: "Pilih provinsi",
             options: provinces,
-            loading: loading
+            loading: loading,
+            defaultValue: province
         },
         "city": {
             type: "select",
@@ -33,7 +35,8 @@ const FishForm = ({ labelButton = "Simpan", onFinish, avatar = true }) => {
             label: "Kota",
             placeholder: "Pilih kota",
             options: cities,
-            loading: loading
+            loading: loading,
+            defaultValue: city
         },
         "size": {
             type: "select",
@@ -41,7 +44,8 @@ const FishForm = ({ labelButton = "Simpan", onFinish, avatar = true }) => {
             label: "Ukuran",
             placeholder: "Pilih ukuran",
             options: sizes,
-            loading: loading
+            loading: loading,
+            defaultValue: size
         },
         "price": {
             type: "currency",
@@ -49,7 +53,8 @@ const FishForm = ({ labelButton = "Simpan", onFinish, avatar = true }) => {
             label: "Harga",
             placeholder: "Inputkan harga",
             value: 0,
-            loading: loading
+            loading: loading,
+            defaultValue: price
         },
         "save": {
             type: "submit",

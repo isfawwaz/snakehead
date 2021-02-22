@@ -1,9 +1,8 @@
 import { Heading, Text, VStack } from "@chakra-ui/react";
 import Lottie from "lottie-react";
 import { useEffect, useState } from "react";
-import { toNumber } from "underscore.string";
-import { useFetchFishes, useFishes } from "../stores/hooks";
-import { formatDate, formatNumber, momment, sentenceSerial } from "../utils/ext";
+import { useFishes } from "../stores/hooks";
+import { formatDate, formatNumber, sentenceSerial } from "../utils/ext";
 import dataAnimation from './../assets/animation/whale.json';
 
 export default function DetailDefault() {

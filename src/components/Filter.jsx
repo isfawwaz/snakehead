@@ -17,15 +17,13 @@ import {
     Input,
     InputRightElement
 } from "@chakra-ui/react";
-import { useContext, useEffect, useRef, useState } from "react";
+import { useContext, useRef, useState } from "react";
 import Select from 'react-select';
 import sort from "../data/sort";
 import { ACTIONS, snakeHead, useFetchArea, useFetchSizes } from "../stores/hooks";
 import { isDesktop } from "../utils/ext";
 import Form from "./Form";
 import Icon from "./Icon";
-
-const _ = require('lodash');
 
 const Filter = ({ onFilterChanged }) => {
     const options = sort;
@@ -42,8 +40,6 @@ const Filter = ({ onFilterChanged }) => {
     };
     const { isOpen, onOpen, onClose } = useDisclosure();
     const btnRef = useRef();
-    
-    let valueProvince = undefined;
     
     const model = {
         province: {

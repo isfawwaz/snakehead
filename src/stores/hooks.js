@@ -303,8 +303,56 @@ const reducer = ( state, action ) => {
             }
 
         // EDIT
+        case ACTIONS.EDIT_REQUEST:
+            return {
+                ...state,
+                loading: true
+            }
+        case ACTIONS.EDIT_ERROR:
+            return {
+                ...state,
+                loading: false,
+                errors: {
+                    ...state.errors,
+                    edit: action.payload
+                }
+            }
+        case ACTIONS.EDIT_CLEAR:
+            return {
+                ...state,
+                loading: false,
+                edit: {},
+                editSuccess: false
+            }
+        case ACTIONS.EDIT_RECEIVE:
+            return {
+                ...state,
+                loading: false,
+                edit: action.payload,
+                editSuccess: true
+            }
 
         // UPDATE
+        case ACTIONS.UPDATE_REQUEST:
+            return {
+                ...state,
+                loading: true
+            }
+        case ACTIONS.UPDATE_ERROR:
+            return {
+                ...state,
+                loading: false,
+                errors: {
+                    ...state.errors,
+                    update: action.payload
+                }
+            }
+        case ACTIONS.UPDATE_RECEIVE:
+            return {
+                ...state,
+                loading: false,
+                editSuccess: true
+            }
 
         // DELETE
 
@@ -385,6 +433,31 @@ export const useFetchSizes = () => {
             }, (e) => {
                 dispatch({
                     type: ACTIONS.SIZE_ERROR,
+                    payload: e
+                })
+            });
+        }
+        fetch();
+    }, []);
+    return state;
+}
+
+export const useFetchEditFish = (id) => {
+    const globalState = useContext(snakeHead);
+    const { state, dispatch } = globalState;
+    dispatch({ type: ACTIONS.EDIT_REQUEST });
+    useEffect( () => {
+        async function fetch() {
+            await api.get("list", { uuid: id }, (items) => {
+                if( !_.isEmpty(items) ) {
+                    dispatch({
+                        type: ACTIONS.EDIT_RECEIVE,
+                        payload: items[0]
+                    });
+                }
+            }, (e) => {
+                dispatch({
+                    type: ACTIONS.EDIT_ERROR,
                     payload: e
                 })
             });

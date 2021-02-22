@@ -15,7 +15,7 @@ import {
 import Fish from '../components/Fish';
 import { ACTIONS, snakeHead, useFetchFishes } from '../stores/hooks';
 import Filter from '../components/Filter';
-import { withRouter } from 'react-router-dom';
+import { useHistory, withRouter } from 'react-router-dom';
 import * as api from '../api/stein';
 import { isDesktop } from '../utils/ext';
 import DetailDefault from '../components/DetailDefault';
@@ -25,6 +25,7 @@ import Detail from '../components/Detail';
 const _ = require('lodash');
 
 function Home() {
+    const history = useHistory();
     const [ data, setData ] = useState([]);
 
     const { fishes, sort, loading, detail } = useFetchFishes();
@@ -92,7 +93,8 @@ function Home() {
                     city={ fish.area_kota } 
                     price={ fish.price }
                     timestamp={ fish.timestamp }
-                    onClick={ () => onItemClicked( fish.uuid ) } /> ) }
+                    onClick={ () => onItemClicked( fish.uuid ) }
+                    onEditClick={ () => history.push("/edit/" + fish.uuid) } /> ) }
             </VStack>
         </div>
         <div className="sh-main-content__detail">

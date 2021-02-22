@@ -29,7 +29,7 @@ export const caps = (value) => {
 export const sentenceSerial = (...args) => {
     if( !_.isEmpty(args) ) {
         let items = [];
-        args.map( it => {
+        args.forEach( it => {
             it.forEach( item => {
                 items.push( caps( item ) );
             });
@@ -80,7 +80,7 @@ export const formatDateHuman = ( date ) => {
         d = moment.parseZone( date );
     }
 
-    if(d.format("YYYY") == moment().format("YYYY")) {
+    if(d.format("YYYY") === moment().format("YYYY")) {
         return d.format("MMM DD");
     }
 

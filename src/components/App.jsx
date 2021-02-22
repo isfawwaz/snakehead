@@ -1,34 +1,25 @@
-import { 
-    Drawer, 
-    DrawerBody, 
-    DrawerCloseButton, 
-    DrawerContent, DrawerHeader, DrawerOverlay, 
-    HStack, 
-    Spinner, 
-    Text, 
-    useDisclosure, 
-    useMediaQuery, 
+import {
+    HStack,
+    Spinner,
+    Text,
+    useDisclosure,
+    useMediaQuery,
     useToast
 } from '@chakra-ui/react';
-import { Fragment, useEffect, useRef, useState } from 'react';
-import { Route, BrowserRouter, Switch, useHistory, withRouter } from 'react-router-dom';
+import { useEffect} from 'react';
+import { Route, Switch, useHistory } from 'react-router-dom';
 import Add from '../pages/Add';
+import Edit from '../pages/Edit';
 import Home from '../pages/Home';
 import { useFishes } from '../stores/hooks';
 import { isDesktop } from '../utils/ext';
-import ConditionalWrapper from './ConditialWrapper';
-import Detail from './Detail';
-import DetailDefault from './DetailDefault';
-import ModalSwitch from './ModalSwitch';
 import Navbar from './Navbar';
 import Sidebar from './Sidebar';
-
-const _ = require('lodash');
 
 function App() {
     // Navbar Drawer
     const { isOpen, onOpen, onClose } = useDisclosure();
-    const [ isMediaLarge ] = useMediaQuery( isDesktop() );
+    const [isMediaLarge] = useMediaQuery(isDesktop());
 
     const { loading } = useFishes();
 
@@ -40,8 +31,8 @@ function App() {
         history.push({ pathname: "add", state: { modal: true } })
     }
 
-    useEffect( () => {
-        if( loading ) {
+    useEffect(() => {
+        if (loading) {
             toast({
                 position: isMediaLarge ? "bottom-right" : "top",
                 duration: null,
@@ -58,15 +49,16 @@ function App() {
     }, [loading]);
 
     return <>
-        <Navbar onMenuClicked={ onOpen } onAddClicked={ handleAddClick } />
+        <Navbar onMenuClicked={onOpen} onAddClicked={handleAddClick} />
         <main className="app">
             <section className="sh-main-sidebar">
-                <Sidebar isOpen={ isOpen } onOpen={ onOpen } onClose={ onClose } onAddClicked={ handleAddClick }  />
+                <Sidebar isOpen={isOpen} onOpen={onOpen} onClose={onClose} onAddClicked={handleAddClick} />
             </section>
             <section className="sh-main-content">
                 <Switch>
-                    <Route exact path="/" component={ Home } />
-                    <Route exact path="/add" component={ Add } />
+                    <Route exact path="/" component={Home} />
+                    <Route exact path="/add" component={Add} />
+                    <Route exact path="/edit/:id" component={Edit} />
                 </Switch>
             </section>
         </main>

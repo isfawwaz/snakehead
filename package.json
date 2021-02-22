@@ -27,6 +27,7 @@
     "remixicon": "^2.5.0",
     "stein-js-client": "^0.0.2",
     "underscore.string": "^3.3.5",
+    "use-deep-compare-effect": "^1.6.1",
     "uuid": "^8.3.2",
     "web-vitals": "^1.0.1",
     "yup": "^0.32.9"
